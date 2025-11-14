@@ -118,10 +118,10 @@ void MinHeap::minHeapify(int i)
     int l_indx= left(i);
     int small = i;
 
-    if (r_indx < heap_size && harr[r_indx] < harr[i]){ 
+    if (r_indx < heap_size && harr[r_indx] < harr[small]){ 
         small = r_indx;
     }
-    if(l_indx < heap_size && harr[l_indx]< harr[i]){
+    if(l_indx < heap_size && harr[l_indx]< harr[small]){
         small = l_indx;
     }
     if (small != i){
