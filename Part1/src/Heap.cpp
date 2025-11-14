@@ -83,11 +83,17 @@ int MinHeap::getMin() const
 
 void MinHeap::deleteKey(int i)
 {
+    harr[i] = INT_MIN;
+    while (i != 0 && (harr[parent(i)] > harr[i])){
+        swap(&harr[i], &harr[parent(i)]);
+        i = parent(i);
+    }
+    extractMin();
 }
 
 void MinHeap::insertKey(int k)
 {
-    if (heap_size = capacity){
+    if (heap_size == capacity){
         capacity = capacity*2;
         int* arr = new int[capacity];
         for (int i = 0; i < heap_size; i++){
