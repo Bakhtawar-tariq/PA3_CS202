@@ -43,7 +43,19 @@ MinHeap& MinHeap::operator=(const MinHeap& other)
 
 int MinHeap::extractMin()
 {
-    return 0;
+    if (heap_size <= 0){
+        return INT_MAX;
+    }
+    if (heap_size == 1){
+        heap_size--;
+        return harr[0];
+    }
+    int root = harr[0];
+    harr[0] = harr[heap_size-1];
+    minHeapify(0);
+    heap_size--;
+
+    return root;
 }
 
 void MinHeap::decreaseKey(int i, int new_val)
@@ -63,6 +75,9 @@ void MinHeap::increaseKey(int i, int new_val)
 
 int MinHeap::getMin() const
 {
+    if (heap_size <= 0){
+        return INT_MAX;
+    }
     return harr[0];
 }
 
@@ -72,6 +87,23 @@ void MinHeap::deleteKey(int i)
 
 void MinHeap::insertKey(int k)
 {
+    if (heap_size = capacity){
+        capacity = capacity*2;
+        int* arr = new int[capacity];
+        for (int i = 0; i < heap_size; i++){
+            arr[i] = harr[i];
+        }
+        delete[] harr;
+        harr = arr;
+    }
+
+    harr[heap_size] = k;
+    int i = heap_size;
+    while (i != 0 && (harr[parent(i)] > harr[i])){
+        swap(&harr[i], &harr[parent(i)]);
+        i = parent(i);
+    }
+    heap_size++;
 }
 
 void MinHeap::minHeapify(int i)
