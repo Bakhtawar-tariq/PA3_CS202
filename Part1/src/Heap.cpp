@@ -69,4 +69,18 @@ void MinHeap::insertKey(int k)
 
 void MinHeap::minHeapify(int i)
 {
+    int r_indx= right(i);
+    int l_indx= left(i);
+    int small = i;
+
+    if (harr[r_indx] < harr[i]){ 
+        small = r_indx;
+    }
+    else if(harr[l_indx]< harr[i]){
+        small = l_indx;
+    }
+    if (small != i){
+        swap(&harr[i],&harr[small]);
+        minHeapify(small);
+    }
 }
