@@ -6,18 +6,38 @@ using namespace std;
 
 MinHeap::MinHeap(int cap)
 {
+   capacity=cap;
+   heap_size = 0;
+   harr = new int[cap];
 }
 
 MinHeap::~MinHeap()
 {
+    delete[] harr;
 }
 
 MinHeap::MinHeap(const MinHeap& other)
 {
+    capacity = other.capacity;
+    heap_size = other.heap_size;
+    harr = new int[capacity];
+    for (int i = 0; i < heap_size; i++){
+        harr[i] = other.harr[i];
+    }
 }
 
 MinHeap& MinHeap::operator=(const MinHeap& other)
 {
+    if (this == &other){
+        return *this;
+    }
+    capacity = other.capacity;
+    heap_size = other.heap_size;
+    delete[] harr;
+    harr = new int[capacity];
+    for (int i = 0; i < heap_size; i++){
+        harr[i] = other.harr[i];
+    }
     return *this;
 }
 
