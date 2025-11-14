@@ -83,6 +83,9 @@ int MinHeap::getMin() const
 
 void MinHeap::deleteKey(int i)
 {
+    if (i <= 0 || i > heap_size){
+        return;
+    }
     harr[i] = INT_MIN;
     while (i != 0 && (harr[parent(i)] > harr[i])){
         swap(&harr[i], &harr[parent(i)]);
