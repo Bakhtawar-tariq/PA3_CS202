@@ -52,8 +52,8 @@ int MinHeap::extractMin()
     }
     int root = harr[0];
     harr[0] = harr[heap_size-1];
-    minHeapify(0);
     heap_size--;
+    minHeapify(0);
 
     return root;
 }
@@ -118,10 +118,10 @@ void MinHeap::minHeapify(int i)
     int l_indx= left(i);
     int small = i;
 
-    if (harr[r_indx] < harr[i]){ 
+    if (r_indx < heap_size && harr[r_indx] < harr[i]){ 
         small = r_indx;
     }
-    else if(harr[l_indx]< harr[i]){
+    if(l_indx < heap_size && harr[l_indx]< harr[i]){
         small = l_indx;
     }
     if (small != i){
