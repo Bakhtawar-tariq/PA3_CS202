@@ -48,15 +48,22 @@ int MinHeap::extractMin()
 
 void MinHeap::decreaseKey(int i, int new_val)
 {
+    harr[i] = new_val;
+    while (i != 0 && (harr[parent(i)] > harr[i])){
+        swap(&harr[i], &harr[parent(i)]);
+        i = parent(i);
+    }
 }
 
 void MinHeap::increaseKey(int i, int new_val)
 {
+    harr[i] = new_val;
+    minHeapify(i);
 }
 
 int MinHeap::getMin() const
 {
-    return 0;
+    return harr[0];
 }
 
 void MinHeap::deleteKey(int i)
