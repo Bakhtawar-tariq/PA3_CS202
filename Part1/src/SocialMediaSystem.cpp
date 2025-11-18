@@ -43,12 +43,7 @@ vector<int> SocialMediaSystem::getTopNPosts(int N) {
     }
 
     MinHeap dupe(feed);
-    int posts_torem = feed.size() - N;
-    for (int i = 0; i < posts_torem; i++){
-        dupe.extractMin();
-    }
-
-    while (dupe.size() > 0){
+    for (int i = 0; i < N && dupe.size() > 0; i++){
         topItems.push_back(dupe.extractMin());
     }
     return topItems;
