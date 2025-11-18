@@ -38,6 +38,19 @@ void SocialMediaSystem::clearLowEngagementPosts(int threshold) {
 
 vector<int> SocialMediaSystem::getTopNPosts(int N) {
     vector<int> topItems;
+    if (N <= 0 || feed.size() == 0){
+        return topItems;
+    }
+
+    MinHeap dupe = feed;
+    int posts_torem = feed.size() - N;
+    for (int i = 0; i < posts_torem; i++){
+        dupe.extractMin();
+    }
+
+    for (int i = 0; i < dupe.size(); i++){
+        topItems.push_back(dupe.extractMin());
+    }
     return topItems;
 }
 
