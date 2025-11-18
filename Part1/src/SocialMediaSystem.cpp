@@ -6,6 +6,11 @@ SocialMediaSystem::SocialMediaSystem()
 }
 
 int SocialMediaSystem::findPostIndex(int value) {
+    for (int i = 0; i < feed.size(); i++){
+        if (feed.elementAt(i) == value){
+            return i;
+        }
+    }
     return -1;
 }
 

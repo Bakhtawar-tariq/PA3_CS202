@@ -83,7 +83,7 @@ int MinHeap::getMin() const
 
 void MinHeap::deleteKey(int i)
 {
-    if (i <= 0 || i > heap_size){
+    if (i < 0 || i >= heap_size){
         return;
     }
     harr[i] = INT_MIN;
