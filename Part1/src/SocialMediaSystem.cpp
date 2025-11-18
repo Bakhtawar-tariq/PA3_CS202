@@ -48,7 +48,7 @@ vector<int> SocialMediaSystem::getTopNPosts(int N) {
         dupe.extractMin();
     }
 
-    for (int i = 0; i < N && dupe.size() > 0; i++){
+    while (dupe.size() > 0){
         topItems.push_back(dupe.extractMin());
     }
     return topItems;
