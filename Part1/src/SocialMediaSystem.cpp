@@ -31,7 +31,9 @@ void SocialMediaSystem::updatePostLikes(int oldLikes, int newLikes) {
 }
 
 void SocialMediaSystem::clearLowEngagementPosts(int threshold) {
-    
+    while (feed.getMin() < threshold){
+        feed.extractMin();
+    }
 }
 
 vector<int> SocialMediaSystem::getTopNPosts(int N) {
