@@ -15,7 +15,9 @@ int SocialMediaSystem::findPostIndex(int value) {
 }
 
 void SocialMediaSystem::buildUndiscoveredFeed(vector<int> likes) {
-    
+    for (int i = 0; i < likes.size(); i++){
+        feed.insertKey(likes[i]);
+    }
 }
 
 void SocialMediaSystem::updatePostLikes(int oldLikes, int newLikes) {
