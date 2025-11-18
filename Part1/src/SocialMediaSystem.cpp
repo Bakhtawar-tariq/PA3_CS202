@@ -26,7 +26,7 @@ void SocialMediaSystem::updatePostLikes(int oldLikes, int newLikes) {
         return;
     }
     else{
-        feed.increaseKey(oldLikes,newLikes);
+        feed.increaseKey(indx,newLikes);
     }
 }
 
@@ -42,13 +42,13 @@ vector<int> SocialMediaSystem::getTopNPosts(int N) {
         return topItems;
     }
 
-    MinHeap dupe = feed;
+    MinHeap dupe(feed);
     int posts_torem = feed.size() - N;
     for (int i = 0; i < posts_torem; i++){
         dupe.extractMin();
     }
 
-    for (int i = 0; i < dupe.size(); i++){
+    for (int i = 0; i < N && dupe.size() > 0; i++){
         topItems.push_back(dupe.extractMin());
     }
     return topItems;
@@ -60,6 +60,6 @@ void SocialMediaSystem::decreasePostLikes(int currentLikes, int newLikes) {
         return;
     }
     else{
-        feed.decreaseKey(currentLikes,newLikes);
+        feed.decreaseKey(indx,newLikes);
     }
 }
