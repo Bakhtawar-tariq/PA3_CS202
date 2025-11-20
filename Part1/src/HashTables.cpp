@@ -25,7 +25,8 @@ HashTable<T>::~HashTable()
 template <typename T>
 void HashTable<T>::calculateLoadFactor()
 {
-    
+    loadFactor = num_elements/table_size;
+    resizeAndRehash();
 }
 
 
