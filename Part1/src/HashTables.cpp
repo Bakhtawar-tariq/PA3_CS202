@@ -16,12 +16,22 @@ HashTable<T>::HashTable(CollisionHandle strategy)
 template <typename T>
 HashTable<T>::~HashTable()
 {
-
+    if (probing_table != nullptr){
+        delete[] probing_table;
+        probing_table = nullptr;
+    }
 }
 
 // =======================
 // Load Factor Calculation
 // =======================
+
+template <typename T>
+void HashTable<T>::resizeAndRehash(){
+
+}
+
+
 template <typename T>
 void HashTable<T>::calculateLoadFactor()
 {
@@ -38,16 +48,16 @@ void HashTable<T>::insertLinearProbing(int key, T value)
 {
     int pos = hashFunction1(key);
     int start = pos;
-    while(!probing_table->isEmpty() && probing_table[pos].key != key){
+    while(!probing_table[pos].isEmpty && probing_table[pos].key != key){
         pos = (pos + 1) % table_size;
-        if (post == start) { //meaning full table
+        if (pos == start) { //meaning full table
             return; 
         }
     }
 
     probing_table[pos].value = value;
     probing_table[pos].key = key;
-    probing_table[pos].isEmpty() = false;
+    probing_table[pos].isEmpty = false;
 
     num_elements++;
     calculateLoadFactor();
@@ -59,12 +69,39 @@ void HashTable<T>::insertLinearProbing(int key, T value)
 template <typename T>
 T HashTable<T>::searchLinearProbing(int key)
 {
+    int pos = hashFunction1(key);
+    int start = pos;
+
+    while(!probing_table[pos].isEmpty || probing_table[pos].key != key){
+        if(!probing_table[pos].isEmpty && probing_table[pos].key != key){
+            return probing_table[pos].value;
+        }
+        pos = (pos + 1) % table_size;
+        if (pos == start) { 
+            break; 
+        }
+    }
     return T();
 }
 
 template <typename T>
 void HashTable<T>::removeLinearProbing(int key)
 {
+    int pos = hashFunction1(key);
+    int start = pos;
+
+    while(!probing_table[pos].isEmpty || probing_table[pos].key != key){
+        if(!probing_table[pos].isEmpty && probing_table[pos].key != key){
+            probing_table[pos].isEmpty = true;
+            num_elements--;
+            calculateLoadFactor();
+            return;
+        }
+        pos = (pos + 1) % table_size;
+        if (pos == start) { 
+            break; 
+        }
+    }
     
 }
 
