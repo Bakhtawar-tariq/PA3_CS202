@@ -26,10 +26,11 @@ class HashTable
         {
             int key;                                        // key used to hash the value.
             T value;                                        // value associated with the key.
-            bool isEmpty;                                   // flag to indicate if the slot is empty.
+            bool isEmpty;    
+            bool isDeleted;                               // flag to indicate if the slot is empty.
 
-            KeyValuePair() : key(0), value(T()), isEmpty(true) {}
-            KeyValuePair(int k, T v, bool empty) : key(k), value(v), isEmpty(empty) {}
+            KeyValuePair() : key(0), value(T()), isEmpty(true), isDeleted(false) {}
+            KeyValuePair(int k, T v, bool empty) : key(k), value(v), isEmpty(empty), isDeleted(false) {}
 
             // overload equality operator for ease.
             bool operator==(const KeyValuePair &other) const

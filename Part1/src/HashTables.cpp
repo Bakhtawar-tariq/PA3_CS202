@@ -72,8 +72,8 @@ T HashTable<T>::searchLinearProbing(int key)
     int pos = hashFunction1(key);
     int start = pos;
 
-    while(!probing_table[pos].isEmpty && probing_table[pos].key != key){
-        if(!probing_table[pos].isEmpty && probing_table[pos].key == key){
+    while(!probing_table[pos].isEmpty || probing_table[pos].isDeleted){
+        if(!probing_table[pos].isDeleted && probing_table[pos].key == key){
             return probing_table[pos].value;
         }
         pos = (pos + 1) % table_size;
@@ -90,9 +90,9 @@ void HashTable<T>::removeLinearProbing(int key)
     int pos = hashFunction1(key);
     int start = pos;
 
-    while(!probing_table[pos].isEmpty && probing_table[pos].key != key){
-        if(!probing_table[pos].isEmpty && probing_table[pos].key != key){
-            probing_table[pos].isEmpty = true;
+    while(!probing_table[pos].isEmpty || probing_table[pos].isDeleted){
+        if(!probing_table[pos].isDeleted && probing_table[pos].key = key){
+            probing_table[pos].isDeleted = true;
             num_elements--;
             calculateLoadFactor();
             return;
@@ -139,7 +139,7 @@ T HashTable<T>::searchQuadraticProbing(int key)
 
     while(i < table_size){
         pos = (pos + i*i) %table_size;
-        if(!probing_table[pos].isEmpty && probing_table[pos].key == key){
+        if(!probing_table[pos].isEmpty && !probing_table[pos].isDeleted && probing_table[pos].key == key){
             return probing_table[pos].value;
         }
         if(probing_table[pos].isEmpty){
@@ -164,8 +164,8 @@ void HashTable<T>::removeQuadraticProbing(int key)
             return;
         }
 
-        if(!probing_table[pos].isEmpty && probing_table[pos].key == key){
-            probing_table[pos].isEmpty = true;
+        if(!probing_table[pos].isEmpty && !probing_table[pos].isDeleted && probing_table[pos].key == key){
+            probing_table[pos].isDeleted = true;
             num_elements--;
             calculateLoadFactor();
             return;
