@@ -36,7 +36,24 @@ void HashTable<T>::calculateLoadFactor()
 template <typename T>
 void HashTable<T>::insertLinearProbing(int key, T value)
 {
+    int pos = hashFunction1(key);
+    int start = pos;
+    while(!probing_table->isEmpty() && probing_table[pos].key != key){
+        pos = (pos + 1) % table_size;
+        if (post == start) { //meaning full table
+            return; 
+        }
+    }
 
+    probing_table[pos].value = value;
+    probing_table[pos].key = key;
+    probing_table[pos].isEmpty() = false;
+
+    num_elements++;
+    calculateLoadFactor();
+    if (loadFactor > loadFactorThreshold){
+        resizeAndRehash()
+    }
 }
 
 template <typename T>
