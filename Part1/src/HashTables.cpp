@@ -182,7 +182,20 @@ void HashTable<T>::removeQuadraticProbing(int key)
 template <typename T>
 void HashTable<T>::insertSeparateChaining(int key, T value)
 {
-    
+    int pos = hashFunction1(key);
+    for (int i = 0; i < chaining_table[pos].size(); i++){ //searching existing key and updating val
+        if (chaining_table[pos][i].key == key){
+            chaining_table[pos][i].value = value;
+            return;
+        }
+    }   
+
+    chaining_table[pos].push_back(KeyValuePair(key,value,false)); //if key doesnt exist then create new and insert
+    num_elements++;
+    calculateLoadFactor();
+    if(loadFactor> loadFactorThreshold){
+        resizeAndRehash();
+    }    
 }
 
 template <typename T>
