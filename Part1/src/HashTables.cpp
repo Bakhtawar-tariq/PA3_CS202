@@ -201,12 +201,29 @@ void HashTable<T>::insertSeparateChaining(int key, T value)
 template <typename T>
 T HashTable<T>::searchSeparateChaining(int key)
 {
+    int pos = hashFunction1(key);
+    for (int i = 0; i < chaining_table[pos].size(); i++){
+        if (chaining_table[pos][i].key == key){
+            return chaining_table[pos][i].value;
+        }
+    }
     return T();
 }
 
 template <typename T>
 void HashTable<T>::removeSeparateChaining(int key)
 {
+    int pos = hashFunction1(key);
+    vector<KeyValuePair> &chain = chaining_table[pos]; //getting ref to the actual chain to make changes
+    for (int i = 0; i < chain.size(); i++){
+        if (chain[i].key == key){
+            chain[i] = chain.back(); //overwrite last elem here
+            chain.pop_back(); // remove the last elem duplicate
+            num_elements--;
+            calculateLoadFactor();
+            return;
+        }
+    }
 
 }
 
