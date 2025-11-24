@@ -28,6 +28,33 @@ HashTable<T>::~HashTable()
 
 template <typename T>
 void HashTable<T>::resizeAndRehash(){
+    int prev_probsize = table_size;
+    vector<vector<KeyValuePair>> prev_chain = chaining_table;
+    KeyValuePair* prev_prob = probing_table;
+
+    table_size = table_size*2 +1;
+    num_elements = 0;
+
+    if (collision_strategy == SEPARATE_CHAINING){
+        chaining_table.clear();
+        chaining_table.resize(table_size);
+
+        for (int i = 0; i < prev_chain.size(); i++){
+            for (int j = 0; j < prev_chain.size(); i++){
+                insert(prev_chain[i][j].key, prev_chain[i][j].value);
+            }
+        }
+    }
+
+    else if (collision_strategy == LINEAR_PROBING || collision_strategy == QUADRATIC_PROBING){
+        probing_table = new KeyValuePair[table_size];
+        for (int i = 0; i < prev_probsize; i++){
+            if (!prev_prob[i].isEmpty && !prev_prob[i].isDeleted){
+                insert(prev_prob[i].key, prev_prob[i].value);
+            }
+        }
+        delete[] prev_prob;
+    }
 
 }
 
@@ -96,7 +123,7 @@ void HashTable<T>::removeLinearProbing(int key)
     int start = pos;
 
     while(!probing_table[pos].isEmpty){
-        if(!probing_table[pos].isDeleted && probing_table[pos].key = key){
+        if(!probing_table[pos].isDeleted && probing_table[pos].key == key){
             probing_table[pos].isDeleted = true;
             num_elements--;
             calculateLoadFactor();
@@ -118,7 +145,7 @@ void HashTable<T>::insertQuadraticProbing(int key, T value)
 {
     int pos = hashFunction1(key);
     for (int i = 0; i < table_size; i++){
-        pos = (pos + i*i) % able_size;
+        pos = (pos + i*i) % table_size;
 
         if (!probing_table[pos].isEmpty && !probing_table[pos].isDeleted && probing_table[pos].key == key){
             probing_table[pos].value = value;
@@ -300,3 +327,5 @@ void HashTable<T>::displayProbingTable()
             cout << "[" << i << "] -> EMPTY\n";
     }
 }
+template class HashTable<int>;
+template class HashTable<std::string>;
