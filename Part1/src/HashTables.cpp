@@ -47,7 +47,7 @@ void HashTable<T>::resizeAndRehash(){
         chaining_table.resize(table_size);
 
         for (int i = 0; i < prev_chain.size(); i++){
-            for (int j = 0; j < prev_chain.size(); j++){
+            for (int j = 0; j < prev_chain[i].size(); j++){
                 insert(prev_chain[i][j].key, prev_chain[i][j].value);
             }
         }
@@ -152,9 +152,9 @@ void HashTable<T>::removeLinearProbing(int key)
 template <typename T>
 void HashTable<T>::insertQuadraticProbing(int key, T value)
 {
-    int pos = hashFunction1(key);
+    int start = hashFunction1(key);
     for (int i = 0; i < table_size; i++){
-        pos = (pos + i*i) % table_size;
+        int pos = (start + i*i) % table_size;
 
         if (!probing_table[pos].isEmpty && !probing_table[pos].isDeleted && probing_table[pos].key == key){
             probing_table[pos].value = value;
@@ -179,9 +179,9 @@ void HashTable<T>::insertQuadraticProbing(int key, T value)
 template <typename T>
 T HashTable<T>::searchQuadraticProbing(int key)
 {
-    int pos = hashFunction1(key);
+    int start = hashFunction1(key);
     for(int i = 0; i < table_size; i++){
-        pos = (pos + i*i) %table_size;
+        int pos = (start + i*i) %table_size;
         if(!probing_table[pos].isEmpty && !probing_table[pos].isDeleted && probing_table[pos].key == key){
             return probing_table[pos].value;
         }
@@ -195,9 +195,9 @@ T HashTable<T>::searchQuadraticProbing(int key)
 template <typename T>
 void HashTable<T>::removeQuadraticProbing(int key)
 {
-    int pos = hashFunction1(key);
+    int start = hashFunction1(key);
     for (int i = 0; i < table_size; i++){
-        pos = (pos + i*i)%table_size;
+        int pos = (start + i*i)%table_size;
 
         if(probing_table[pos].isEmpty){
             return;
