@@ -10,6 +10,7 @@ HashTable<T>::HashTable(CollisionHandle strategy)
     collision_strategy = strategy;
     table_size = 11; 
     num_elements = 0;
+    loadFactor = 0.0;
     
     if (collision_strategy == LINEAR_PROBING || collision_strategy == QUADRATIC_PROBING)
         probing_table = new KeyValuePair[table_size];
@@ -57,19 +58,25 @@ void HashTable<T>::resizeAndRehash(){
         probing_table = new KeyValuePair[table_size];
         for (int i = 0; i < prev_probsize; i++){
             if (!prev_prob[i].isEmpty && !prev_prob[i].isDeleted){
-                insert(prev_prob[i].key, prev_prob[i].value);
+                if(collision_strategy == LINEAR_PROBING){
+                    insertLinearProbing(prev_prob[i].key, prev_prob[i].value);
+                }
+                else{
+                    insertQuadraticProbing(prev_prob[i].key, prev_prob[i].value);
+                }
+
             }
         }
         delete[] prev_prob;
     }
-
+    loadFactor = (float)num_elements / table_size;
 }
 
 
 template <typename T>
 void HashTable<T>::calculateLoadFactor()
 {
-    loadFactor = num_elements/table_size;
+    loadFactor = (float)num_elements/table_size;
     if (loadFactor > loadFactorThreshold) {
         resizeAndRehash();
     }
@@ -101,10 +108,6 @@ void HashTable<T>::insertLinearProbing(int key, T value)
     probing_table[pos].isDeleted = false;
 
     num_elements++;
-    calculateLoadFactor();
-    if (loadFactor > loadFactorThreshold){
-        resizeAndRehash();
-    }
 }
 
 template <typename T>
@@ -135,7 +138,6 @@ void HashTable<T>::removeLinearProbing(int key)
         if(!probing_table[pos].isDeleted && probing_table[pos].key == key){
             probing_table[pos].isDeleted = true;
             num_elements--;
-            calculateLoadFactor();
             return;
         }
         pos = (pos + 1) % table_size;
@@ -152,64 +154,19 @@ void HashTable<T>::removeLinearProbing(int key)
 template <typename T>
 void HashTable<T>::insertQuadraticProbing(int key, T value)
 {
-    int start = hashFunction1(key);
-    for (int i = 0; i < table_size; i++){
-        int pos = (start + i*i) % table_size;
-
-        if (!probing_table[pos].isEmpty && !probing_table[pos].isDeleted && probing_table[pos].key == key){
-            probing_table[pos].value = value;
-            return;
-        }
-        if (probing_table[pos].isEmpty || probing_table[pos].isDeleted){
-            probing_table[pos].value = value;
-            probing_table[pos].key = key;
-            probing_table[pos].isEmpty = false;
-
-            num_elements++;
-            calculateLoadFactor();
-            if (loadFactor > loadFactorThreshold) {
-                resizeAndRehash(); 
-            }
-            return;
-        }
-    } 
-   return; 
+   
 }
 
 template <typename T>
 T HashTable<T>::searchQuadraticProbing(int key)
 {
-    int start = hashFunction1(key);
-    for(int i = 0; i < table_size; i++){
-        int pos = (start + i*i) %table_size;
-        if(!probing_table[pos].isEmpty && !probing_table[pos].isDeleted && probing_table[pos].key == key){
-            return probing_table[pos].value;
-        }
-        if(probing_table[pos].isEmpty){
-            return T();
-        }
-    }
     return T();
 }
 
 template <typename T>
 void HashTable<T>::removeQuadraticProbing(int key)
 {
-    int start = hashFunction1(key);
-    for (int i = 0; i < table_size; i++){
-        int pos = (start + i*i)%table_size;
 
-        if(probing_table[pos].isEmpty){
-            return;
-        }
-
-        if(!probing_table[pos].isEmpty && !probing_table[pos].isDeleted && probing_table[pos].key == key){
-            probing_table[pos].isDeleted = true;
-            num_elements--;
-            calculateLoadFactor();
-            return;
-        }
-    }
 }
 
 // =======================
@@ -227,11 +184,7 @@ void HashTable<T>::insertSeparateChaining(int key, T value)
     }   
 
     chaining_table[pos].push_back(KeyValuePair(key,value,false)); //if key doesnt exist then create new and insert
-    num_elements++;
-    calculateLoadFactor();
-    if(loadFactor> loadFactorThreshold){
-        resizeAndRehash();
-    }    
+    num_elements++;   
 }
 
 template <typename T>
@@ -256,7 +209,6 @@ void HashTable<T>::removeSeparateChaining(int key)
             chain[i] = chain.back(); //overwrite last elem here
             chain.pop_back(); // remove the last elem duplicate
             num_elements--;
-            calculateLoadFactor();
             return;
         }
     }
