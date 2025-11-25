@@ -8,6 +8,13 @@ template <typename T>
 HashTable<T>::HashTable(CollisionHandle strategy)
 {
     collision_strategy = strategy;
+    table_size = 11; 
+    num_elements = 0;
+    
+    if (collision_strategy == LINEAR_PROBING || collision_strategy == QUADRATIC_PROBING)
+        probing_table = new KeyValuePair[table_size];
+    else
+        chaining_table.resize(table_size);
 }
 
 // =======================
@@ -40,7 +47,7 @@ void HashTable<T>::resizeAndRehash(){
         chaining_table.resize(table_size);
 
         for (int i = 0; i < prev_chain.size(); i++){
-            for (int j = 0; j < prev_chain.size(); i++){
+            for (int j = 0; j < prev_chain.size(); j++){
                 insert(prev_chain[i][j].key, prev_chain[i][j].value);
             }
         }
@@ -63,7 +70,9 @@ template <typename T>
 void HashTable<T>::calculateLoadFactor()
 {
     loadFactor = num_elements/table_size;
-    resizeAndRehash();
+    if (loadFactor > loadFactorThreshold) {
+        resizeAndRehash();
+    }
 }
 
 
