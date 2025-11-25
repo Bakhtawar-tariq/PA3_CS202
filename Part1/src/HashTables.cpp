@@ -56,6 +56,10 @@ void HashTable<T>::resizeAndRehash(){
 
     else if (collision_strategy == LINEAR_PROBING || collision_strategy == QUADRATIC_PROBING){
         probing_table = new KeyValuePair[table_size];
+        for (int i = 0; i < table_size; i++) {
+            probing_table[i].isEmpty = true;
+            probing_table[i].isDeleted = false;
+        }
         for (int i = 0; i < prev_probsize; i++){
             if (!prev_prob[i].isEmpty && !prev_prob[i].isDeleted){
                 if(collision_strategy == LINEAR_PROBING){
@@ -108,6 +112,7 @@ void HashTable<T>::insertLinearProbing(int key, T value)
     probing_table[pos].isDeleted = false;
 
     num_elements++;
+
 }
 
 template <typename T>
@@ -154,19 +159,65 @@ void HashTable<T>::removeLinearProbing(int key)
 template <typename T>
 void HashTable<T>::insertQuadraticProbing(int key, T value)
 {
-   
+    int start = hashFunction1(key);
+    int i = 0;
+    while ( i <table_size){
+        int pos = (start + (i*i)) % table_size;
+        if(probing_table[pos].isEmpty || probing_table[pos].isDeleted){
+            probing_table[pos].key = key;
+            probing_table[pos].value = value;
+            probing_table[pos].isEmpty = false;
+            probing_table[pos].isDeleted = false;
+            num_elements++;
+            return;
+        }
+        if(probing_table[pos].key == key && !probing_table[pos].isDeleted){
+            probing_table[pos].value = value;
+            return;
+        }
+        i++;
+    }
+    resizeAndRehash();
+    insertQuadraticProbing(key, value); 
 }
 
 template <typename T>
 T HashTable<T>::searchQuadraticProbing(int key)
 {
+    int start = hashFunction1(key);
+    int i = 0;
+
+    while (i < table_size) {
+        int pos = (start + (i*i)) % table_size;
+        if (probing_table[pos].isEmpty){
+            return T();
+        }    
+        if (!probing_table[pos].isDeleted && probing_table[pos].key == key){
+            return probing_table[pos].value;
+        }    
+        i++;
+    }
     return T();
 }
 
 template <typename T>
 void HashTable<T>::removeQuadraticProbing(int key)
 {
+    int start = hashFunction1(key);
+    int i = 0;
 
+    while (i < table_size) {
+        int pos = (start + (i*i)) % table_size;
+        if (probing_table[pos].isEmpty){
+            return;
+        }    
+        if (!probing_table[pos].isDeleted && probing_table[pos].key == key) {
+            probing_table[pos].isDeleted = true;
+            num_elements--;
+            return;
+        }
+        i++;
+    }
 }
 
 // =======================
