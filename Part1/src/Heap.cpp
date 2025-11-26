@@ -70,7 +70,9 @@ void MinHeap::decreaseKey(int i, int new_val)
 void MinHeap::increaseKey(int i, int new_val)
 {
     harr[i] = new_val;
-    minHeapify(i);
+    if ( i < heap_size){
+        minHeapify(i);
+    }
 }
 
 int MinHeap::getMin() const
