@@ -102,6 +102,7 @@ std::vector<int> SocialGraph::getAdjacent(int from) const
 std::optional<std::vector<int>> SocialGraph::findShortestPath(int start, int end) const
 {
     // TODO
+    //CHECKING SOMETHING
     return std::nullopt;
 }
 
