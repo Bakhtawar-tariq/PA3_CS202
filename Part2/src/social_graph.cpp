@@ -15,6 +15,11 @@ SocialGraph::SocialGraph(SocialGraph &&other) noexcept
 SocialGraph &SocialGraph::operator=(SocialGraph &&other) noexcept
 {
     // TODO: Impliment the Move assignment operator
+    if (this != &other){
+        adjList = move(other.adjList);
+        other.adjList.clear();
+    }
+    return *this;
 }
 
 // --- Vertex Management ---
@@ -22,11 +27,21 @@ SocialGraph &SocialGraph::operator=(SocialGraph &&other) noexcept
 void SocialGraph::addVertex(int node)
 {
     // TODO
+    adjList[node];
 }
 
 void SocialGraph::removeVertex(int node)
 {
     // TODO
+    adjList.erase(node);
+    for (auto it = adjList.begin(); it != adjList.end(); ++it){
+        std::vector<int>& list = it->second;
+        for (int i = list.size()-1; i >= 0; i--){
+            if (list[i] == node){
+                list.erase(list.begin()+i);
+            }
+        }
+    }
 }
 
 // --- Edge Management ---
