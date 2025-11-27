@@ -27,7 +27,7 @@ SocialGraph &SocialGraph::operator=(SocialGraph &&other) noexcept
 void SocialGraph::addVertex(int node)
 {
     // TODO
-    adjList[node];
+    adjList.insert(std::make_pair(node,std::vector<int>()));
 }
 
 void SocialGraph::removeVertex(int node)

@@ -26,10 +26,10 @@ void InteractionGraph::addVertex(int id, NodeType type)
 {
     // TODO
     if (type == NodeType::POST){
-        postToUserEdges[id];
+        postToUserEdges.insert(std::make_pair(id,std::vector<Interaction>()));
     }
     else if (type == NodeType::USER){
-        userToPostEdges[id];
+        userToPostEdges.insert(std::make_pair(id,std::vector<Interaction>()));
     }
 }
 
