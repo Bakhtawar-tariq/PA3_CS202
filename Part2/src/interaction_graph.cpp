@@ -25,6 +25,12 @@ InteractionGraph &InteractionGraph::operator=(InteractionGraph &&other) noexcept
 void InteractionGraph::addVertex(int id, NodeType type)
 {
     // TODO
+    if (type == NodeType::POST){
+        postToUserEdges[id];
+    }
+    else if (type == NodeType::USER){
+        userToPostEdges[id];
+    }
 }
 
 void InteractionGraph::removeVertex(int id, NodeType type)
@@ -38,6 +44,8 @@ void InteractionGraph::addInteraction(int userID, int postID, int weight)
 {
     // TODO: Implement this function.
     // Remember to update BOTH maps to keep them in sync.
+    userToPostEdges[userID].push_back({postID, weight});
+    postToUserEdges[postID].push_back({userID, weight});
 }
 
 // --- Advanced Analysis Functions ---
