@@ -92,7 +92,11 @@ bool SocialGraph::hasEdge(int from, int to) const
 std::vector<int> SocialGraph::getAdjacent(int from) const
 {
     // TODO
-    return {};
+    auto it = adjList.find(from);
+    if (it == adjList.end()){
+        return {};
+    }
+    return it->second;
 }
 
 std::optional<std::vector<int>> SocialGraph::findShortestPath(int start, int end) const
