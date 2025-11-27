@@ -87,7 +87,7 @@ bool SocialGraph::hasEdge(int from, int to) const
 {
     // TODO
     auto it = adjList.find(from);
-    if (it == adjList.end()){
+    if (it == adjList.end() || adjList.find(to) == adjList.end()){
         return false; //if either vertex doesnot exist return
     }
     for (int i = 0; i < it->second.size(); i++){
