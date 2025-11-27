@@ -35,7 +35,7 @@ void SocialGraph::removeVertex(int node)
     // TODO
     adjList.erase(node);
     for (auto it = adjList.begin(); it != adjList.end(); ++it){
-        std::vector<int>& list = it->second;
+        auto& list = it->second;
         for (int i = list.size()-1; i >= 0; i--){
             if (list[i] == node){
                 list.erase(list.begin()+i);
@@ -49,11 +49,36 @@ void SocialGraph::removeVertex(int node)
 void SocialGraph::addEdge(int from, int to, int /*weight*/)
 {
     // TODO
+    if (adjList.find(from) == adjList.end() || adjList.find(to) == adjList.end()){
+        return; //if either vertex doesnot exist return
+    }
+    auto it = adjList.find(from);
+    auto &temp = it->second;
+    int FLAG = 0; //to check for duplicates
+    for (int i = 0; i < temp.size(); i++){
+        if (temp[i] == to){
+            FLAG = 1;
+            break;
+        }
+    }
+    if (FLAG == 0){
+        temp.push_back(to);
+    }
 }
 
 void SocialGraph::removeEdge(int from, int to)
 {
     // TODO
+    auto it = adjList.find(from);
+    if (it == adjList.end()){
+        return;
+    }
+    auto &temp = it->second;
+    for (int i = temp.size()-1; i >= 0; i--){
+        if(temp[i] == to){
+            temp.erase(temp.begin()+ i);
+        }
+    }
 }
 
 // --- Graph Queries ---
