@@ -81,6 +81,36 @@ void InteractionGraph::addInteraction(int userID, int postID, int weight)
 std::vector<std::pair<int, double>> InteractionGraph::findSimilarUsers(int userID, int topN) const
 {
     // TODO: Implement this function to calculate Jaccard Similarity(issay direct hint kiya doon ).
+    std::vector<std::pair<int, double>> res;
+    //using sets as fastlookup O(1) using count function
+    std::unordered_set<int> postids; //interacted posts of target usr
+
+    auto it = userToPostEdges.find(userID);
+    for (int i = 0 ; i < it->second.size(); i++){ //basically building all the postids our user has interacted w
+        postids.insert(it->second[i].targetID);
+    }
+    for (auto it2 = userToPostEdges.begin(); it2!= userToPostEdges.end(); ++it2){
+        std::unordered_set<int> otherpostids; //interacted posts of otherusers
+        int intersectionsize = 0;
+        int unionsize = 0;
+
+        for (int i = 0; i < it2->second.size(); i++){
+            otherpostids.insert(it2->second[i].targetID); //building postids of the posts a user from the remaining users has interacted w
+        }
+        for (auto it3 = postids.begin(); it3 != postids.end(); ++it3){ //check posts that our user has iteracted w, and if the other user has also interacted w it then increase intersectionsize
+            if(otherpostids.count(*it3)){
+                intersectionsize++;
+            }
+        }
+        unionsize = postids.size() + otherpostids.size() - intersectionsize;
+        double jaccard = 0.0;
+        if (unionsize != 0){ // avoid division by 0
+            double jaccard = (double)intersectionsize/unionsize;
+        }
+
+        res.push_back(std::make_pair(it2->first, jaccard));
+    }
+
     return {};
 }
 
