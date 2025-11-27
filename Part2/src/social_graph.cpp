@@ -111,8 +111,47 @@ std::vector<int> SocialGraph::getAdjacent(int from) const
 std::optional<std::vector<int>> SocialGraph::findShortestPath(int start, int end) const
 {
     // TODO
-    //CHECKING SOMETHING
-    return std::nullopt;
+    if (adjList.find(start) == adjList.end()){
+        return std::nullopt;
+    }
+
+    std::queue<int> q;
+    std::unordered_map<int, int> parent; //to keep track of what the prev/parent node of each node in our path 
+    std::unordered_map<int, bool> visited;
+
+    q.push(start);
+    visited[start] = true;
+    bool found = false; 
+    while (!q.empty() && !found){
+        int n = q.front();
+        q.pop();
+
+        auto &list = adjList.at(n); //digging into the n node's adjancy list 
+        for (int i = 0; i < list.size(); i++){
+            if (!visited[list[i]]){
+                visited[list[i]] = true;
+                parent[list[i]] = n;
+                if (list[i] == end){
+                    found = true;
+                    break;
+                }
+                q.push(list[i]);
+            }
+        }
+    }
+    if (found == false){
+        return std::nullopt;
+    }
+
+    std::vector<int> bfs;
+    int i = end;
+    while (i != start){
+        bfs.push_back(i);
+        i = parent[i]; //basically backtracking i.e u push the end and then u have to push where the end comes from, which is the parent of end and so on
+    }
+    bfs.push_back(start);
+    std::reverse(bfs.begin(), bfs.end());
+    return bfs;
 }
 
 // --- Advanced Analysis Functions ---
