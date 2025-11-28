@@ -207,7 +207,9 @@ std::vector<std::vector<int>> SocialGraph::findCommunities() const
             kosaraju_dfs1(it->first,visited,finish_stack);
         }
     }
-
+    for (auto it = adjList.begin(); it != adjList.end(); ++it) {
+        transposed[it->first] = std::vector<int>(); // empty vector for nodes with no outgoing edges
+    }    
     for (auto it = adjList.begin(); it!=adjList.end(); ++it){
         for (int i = 0; i< it->second.size(); i++){ //loop over neighbors of cur node
             int v = it->second[i]; //one neighbor

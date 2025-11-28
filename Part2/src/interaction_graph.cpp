@@ -111,7 +111,25 @@ std::vector<std::pair<int, double>> InteractionGraph::findSimilarUsers(int userI
         res.push_back(std::make_pair(it2->first, jaccard));
     }
 
-    return {};
+    //sorting by ascending similarity using bubble sort
+    for(int i = 0; i < res.size(); i++){
+        for (int j = i+1; j<res.size(); j++){
+            if(res[i].second > res[j].second){
+                std::pair<int,double> temp = res[i];
+                res[i] = res[j];
+                res[j] = temp;
+            }
+        }
+    }
+    //now for descending reverse the res
+    std::vector<std::pair<int,double>> reversed;
+    for (int i = res.size()-1; i >= 0; i--){
+        reversed.push_back(res[i]);
+    }
+    if(reversed.size()> topN){ //we need only topN, if less than topN then simply return reversed as it is
+        reversed.resize(topN);
+    }
+    return reversed;
 }
 
 std::vector<int> InteractionGraph::recommendPosts(int userID, int topN) const
