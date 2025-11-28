@@ -58,7 +58,7 @@ void InteractionGraph::removeVertex(int id, NodeType type)
         for (int i = 0; i < post_int.size(); i++){
             int userid = post_int[i].targetID; //getting user id of each user that interacted w the post
             std::vector<Interaction>& user_posts = userToPostEdges.at(userid); //getting all posts of that user which interacted w the post we wanna remove
-            for (int j = post_int.size() - 1; j >= 0; j--){
+            for (int j = user_posts.size() - 1; j >= 0; j--){
                 if (user_posts[j].targetID == id){ //removing the post from each users' interaction
                     user_posts.erase(user_posts.begin()+j);
                 }

@@ -111,6 +111,9 @@ std::vector<int> SocialGraph::getAdjacent(int from) const
 std::optional<std::vector<int>> SocialGraph::findShortestPath(int start, int end) const
 {
     // TODO
+    if (start == end){
+        return std::vector<int>{start};
+    }
     if (adjList.find(start) == adjList.end()){
         return std::nullopt;
     }
@@ -159,7 +162,27 @@ std::optional<std::vector<int>> SocialGraph::findShortestPath(int start, int end
 std::vector<std::pair<int, int>> SocialGraph::findEchoChambers() const
 {
     // TODO
-    return {};
+    std::vector <std::pair<int,int>> mutuals;
+    for (auto itA = adjList.begin(); itA!= adjList.end(); ++itA){
+        int A = itA->first; //for each user in adjlist we get the people its following to see if they are following a
+        for (int i = 0; i <itA->second.size(); i++){
+            int B = itA->second[i];
+            auto itB = adjList.find(B); //getting iterator to B in adjlist so we can check its following
+            int FLAG = 0;
+            for (int j = 0; j < itB->second.size(); j++){
+                if(itB->second[j] == A){ //if somewhere in following then break means mutual exists
+                    FLAG = 1;
+                    break;
+                }
+            }
+            if (FLAG == 1){
+                if (A < B){ // just a check to make sure duplicates arent added...i.e if 1,2 exists then later it wont add 2,1
+                mutuals.push_back({A,B});
+                }
+            }
+        }
+    }
+    return mutuals;
 }
 
 std::unordered_map<int, double> SocialGraph::calculatePageRank(double damping, int iterations) const
