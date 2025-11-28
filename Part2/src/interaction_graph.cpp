@@ -90,6 +90,9 @@ std::vector<std::pair<int, double>> InteractionGraph::findSimilarUsers(int userI
         postids.insert(it->second[i].targetID);
     }
     for (auto it2 = userToPostEdges.begin(); it2!= userToPostEdges.end(); ++it2){
+        if (it2->first == userID) {
+            continue;
+        }
         std::unordered_set<int> otherpostids; //interacted posts of otherusers
         int intersectionsize = 0;
         int unionsize = 0;
@@ -105,10 +108,11 @@ std::vector<std::pair<int, double>> InteractionGraph::findSimilarUsers(int userI
         unionsize = postids.size() + otherpostids.size() - intersectionsize;
         double jaccard = 0.0;
         if (unionsize != 0){ // avoid division by 0
-            double jaccard = (double)intersectionsize/unionsize;
+            jaccard = (double)intersectionsize/unionsize;
         }
-
-        res.push_back(std::make_pair(it2->first, jaccard));
+        if (jaccard > 0.0){
+            res.push_back(std::make_pair(it2->first, jaccard));
+        }
     }
 
     //sorting by ascending similarity using bubble sort
