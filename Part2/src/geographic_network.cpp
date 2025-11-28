@@ -13,17 +13,32 @@ GeographicNetwork &GeographicNetwork::operator=(GeographicNetwork &&other) noexc
 {
     // TODO
     // Impliment the Move assignment operator
+    if (this != &other){
+        adjList = move(other.adjList);
+        other.adjList.clear();
+    }
+    return *this;
 }
 
 // --- Vertex Management ---
 void GeographicNetwork::addVertex(int node)
 {
     // TODO
+    adjList.insert(std::make_pair(node, std::vector<Edge>()));
 }
 
 void GeographicNetwork::removeVertex(int node)
 {
     // TODO
+    adjList.erase(node);
+    for (auto it = adjList.begin(); it != adjList.end(); ++it){
+        auto& edge = it->second;
+        for (int i = edge.size()-1; i >= 0; i--){
+            if (edge[i].to == node){
+                edge.erase(edge.begin()+i);
+            }
+        }
+    }
 }
 
 // --- Edge Management ---
