@@ -214,4 +214,13 @@ void SocialGraph::kosaraju_dfs1(int u, std::unordered_map<int, bool> &visited, s
 void SocialGraph::kosaraju_dfs2(int u, std::unordered_map<int, bool> &visited, std::vector<int> &component, const std::unordered_map<int, std::vector<int>> &transposed_graph) const
 {
     // TODO
+    visited[u] = true;
+    component.push_back(u);
+    auto &transposed = transposed_graph.at(u);
+    for (int i = 0; i< transposed.size(); i++){
+        int v = transposed[i];
+        if(!visited[v]){
+            kosaraju_dfs2(v,visited,component,transposed_graph);
+        }
+    }
 }
