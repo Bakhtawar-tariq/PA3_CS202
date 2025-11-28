@@ -194,6 +194,15 @@ std::unordered_map<int, double> SocialGraph::calculatePageRank(double damping, i
 std::vector<std::vector<int>> SocialGraph::findCommunities() const
 {
     // TODO
+    std::vector<std::vector<int>> SCC;
+    std::unordered_map<int,bool> visited;
+    std::vector<int> finish_stack;
+    std::unordered_map<int, std::vector<int>> transposed;
+    for(auto it = adjList.begin(); it != adjList.end(); ++it){
+        if(!visited[it->first]){
+            kosaraju_dfs1(it->first,visited,finish_stack);
+        }
+    }
     return {};
 }
 
