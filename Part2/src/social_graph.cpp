@@ -198,12 +198,34 @@ std::vector<std::vector<int>> SocialGraph::findCommunities() const
     std::unordered_map<int,bool> visited;
     std::vector<int> finish_stack;
     std::unordered_map<int, std::vector<int>> transposed;
+
+    for (auto it = adjList.begin(); it != adjList.end(); it++) {
+        visited[it->first] = false; //no nodes have been visited yet
+    }    
     for(auto it = adjList.begin(); it != adjList.end(); ++it){
         if(!visited[it->first]){
             kosaraju_dfs1(it->first,visited,finish_stack);
         }
     }
-    return {};
+
+    for (auto it = adjList.begin(); it!=adjList.end(); ++it){
+        for (int i = 0; i< it->second.size(); i++){ //loop over neighbors of cur node
+            int v = it->second[i]; //one neighbor
+            transposed[v].push_back(it->first); //rn in our graph its u->v, now we make it v->u
+        }
+    }
+
+    for (auto it = visited.begin(); it != visited.end(); ++it) {
+        it->second = false; // reset visited
+    }
+    for (int i = finish_stack.size() - 1; i >= 0; i--) {
+        if (!visited[finish_stack[i]]) { //if node hasnt been put in component
+            std::vector<int> component;
+            kosaraju_dfs2(finish_stack[i], visited, component, transposed);
+            SCC.push_back(component); //save this scc
+        }
+    }
+    return SCC;
 }
 
 void SocialGraph::kosaraju_dfs1(int u, std::unordered_map<int, bool> &visited, std::vector<int> &finish_stack) const
