@@ -200,6 +200,15 @@ std::vector<std::vector<int>> SocialGraph::findCommunities() const
 void SocialGraph::kosaraju_dfs1(int u, std::unordered_map<int, bool> &visited, std::vector<int> &finish_stack) const
 {
     // TODO
+    visited[u] = true;
+    auto &list = adjList.at(u);
+    for (int i = 0; i < list.size(); i++){
+        int v = list[i];
+        if(!visited[v]){
+            kosaraju_dfs1(v,visited,finish_stack);
+        }
+    }
+    finish_stack.push_back(u);
 }
 
 void SocialGraph::kosaraju_dfs2(int u, std::unordered_map<int, bool> &visited, std::vector<int> &component, const std::unordered_map<int, std::vector<int>> &transposed_graph) const
