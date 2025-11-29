@@ -58,6 +58,22 @@ void GeographicNetwork::addEdge(int from, int to, int weight)
 void GeographicNetwork::removeEdge(int from, int to)
 {
     // TODO
+    if (adjList.count(from)){
+        auto &edges = adjList.at(from);
+        for (int i = edges.size()-1; i >= 0; i--){
+            if (edges[i].to == to){
+                edges.erase(edges.begin()+i);
+            }
+        }
+    }
+    if (adjList.count(to)){
+        auto &edges = adjList.at(to);
+        for (int i = edges.size()-1; i >= 0; i--){
+            if (edges[i].to == from){
+                edges.erase(edges.begin()+i);
+            }
+        }
+    }
 }
 
 // --- Graph Queries ---
