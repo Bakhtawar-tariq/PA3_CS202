@@ -146,7 +146,21 @@ std::vector<int> InteractionGraph::recommendPosts(int userID, int topN) const
 std::unordered_map<int, double> InteractionGraph::calculateTrendScores(const std::unordered_map<int, double> &pageRanks) const
 {
     // TODO: Implement this function to calculate trend scores based on PageRank.
-    return {};
+    std::unordered_map<int, double> trends;
+    for (auto it = postToUserEdges.begin(); it!= postToUserEdges.end(); ++it){ //iterating thru posts
+        double score = 0.0;
+        for (int i = 0; i < it->second.size(); i++){ //iterating thru users interacted w the post
+            int user = it->second[i].targetID; //extracting each user and weight of interaction
+            int weight = it->second[i].weight;
+
+            auto rank = pageRanks.find(user); // find the users rank
+            if (rank != pageRanks.end()){ //check if pagerank is empty for user
+                score = score + (rank->second * weight); //apply in formula
+            }
+        }
+        trends[it->first] = score; //update score for that post
+    }
+    return trends;
 }
 
 std::optional<std::vector<int>> InteractionGraph::getProcessingOrder() const
