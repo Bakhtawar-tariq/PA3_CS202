@@ -218,11 +218,29 @@ std::unordered_map<int, double> SocialGraph::calculatePageRank(double damping, i
 
     for (int i = 0; i < iterations; i++){
         for(int j = 0; j < n; j++){
-            int user = allusers[j];
-            newrank[user] = (1.0 - damping)/n;
+            int user = allusers[j]; //user we are gonna calculate rank for 
+            newrank[user] = (1.0 - damping)/n; // giving it a base value
+
+            if(followers.find(user) != followers.end()){ 
+                std::vector<int>& followsuser = followers[user]; //getting the users that follow our user
+                for (int k = 0; k <followsuser.size(); k++){
+                    int V = followsuser[k]; //taking each follower as we need rank
+                    int outdegree_V = 0; //computing its outdegree as we need it in our formula
+                    if(adjList.find(V) != adjList.end()){
+                        outdegree_V = adjList.at(V).size(); //its outdeg is the people it follows so get that from adjlist
+                    }
+                    if (outdegree_V > 0){ //to avoid division from 0
+                        newrank[user] += damping *(rank[V]/outdegree_V);
+                    }
+                }
+            }
+        }
+        for (int l = 0; i < n; i++){ //updating rank for the next iteration
+          int user = allusers[l];  
+          rank[user] = newrank[user];  
         }
     }
-    return {};
+    return rank;
 }
 
 std::vector<std::vector<int>> SocialGraph::findCommunities() const
