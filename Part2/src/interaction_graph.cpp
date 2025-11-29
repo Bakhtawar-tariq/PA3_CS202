@@ -140,7 +140,54 @@ std::vector<int> InteractionGraph::recommendPosts(int userID, int topN) const
 {
     // This implementation uses the top 5 most similar users to generate recommendations.
     // TODO
-    return {};
+    auto similar = findSimilarUsers(userID, 5);
+    std::unordered_map<int,double> postscore;
+    std::unordered_set<int> alreadyseen; //using set so duplicate posts dont get added + quick search
+    
+    auto userposts = userToPostEdges.find(userID); //checking if user exists
+    if(userposts != userToPostEdges.end()){
+        auto interactions = userposts->second; //get posts its interacted w
+        for (int i = 0; i < interactions.size(); i++){
+            alreadyseen.insert(interactions[i].targetID); //loop through and push them to seen i.e filtering them out
+        }
+    }
+    for (int i = 0; i< similar.size(); i++){//loop through similar users
+        auto simposts = userToPostEdges.find(similar[i].first); 
+        if(simposts != userToPostEdges.end()){ 
+            auto interactions = simposts->second; //find the posts a similar user interacted w
+            for (int j = 0; j <interactions.size(); j++){ //loop through a similar users interacted posts
+                if (alreadyseen.find(interactions[j].targetID) != alreadyseen.end()){//if the post has been seen by user then skip
+                    continue;
+                }
+                postscore[interactions[j].targetID] += similar[i].second * interactions[j].weight; //calculating score of each post by multiplying its weight with how similar the user is w our og user
+            }
+        }
+    }
+    std::vector<std::pair<int,double>> score; //since we need sorted, we convert map to vector 
+    for (auto it = postscore.begin(); it != postscore.end(); ++it){
+        score.push_back(*it);
+    }
+    for(int i = 0; i < score.size(); i++){ //bubble sort 
+        for (int j = i+1; j<score.size(); j++){
+            if(score[i].second > score[j].second){
+                std::pair<int,double> temp = score[i];
+                score[i] = score[j];
+                score[j] = temp;
+            }
+        }
+    }
+    std::vector<std::pair<int,double>> reversed; //descending order
+    for (int i = score.size()-1; i >= 0; i--){
+        reversed.push_back(score[i]);
+    }
+    std::vector<int> recommend; //need only keys
+    for (int i = 0; i < reversed.size(); i++){
+        recommend.push_back(reversed[i].first);
+    }
+    if (recommend.size() > topN){
+        recommend.resize(topN);
+    }
+    return recommend;
 }
 
 std::unordered_map<int, double> InteractionGraph::calculateTrendScores(const std::unordered_map<int, double> &pageRanks) const
