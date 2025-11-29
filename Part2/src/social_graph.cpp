@@ -188,6 +188,22 @@ std::vector<std::pair<int, int>> SocialGraph::findEchoChambers() const
 std::unordered_map<int, double> SocialGraph::calculatePageRank(double damping, int iterations) const
 {
     // TODO
+    std::unordered_map<int,double> rank;
+    std::unordered_map<int,double> newrank;
+    std::vector<int> allusers; //getting total users in graph
+    std::unordered_map<int,bool> added; //just a check to make sure we dont add duplicates
+    for (auto it = adjList.begin(); it != adjList.end(); ++it){
+        if (!added[it->first]){ //visit every node, if not added, add it to allusers
+            added[it->first] = true;
+            allusers.push_back(it->first);
+        }
+        for (int i = 0; i < it->second.size(); i++){//go through its following and add nodes not added before
+            if(!added[it->second[i]]){
+                added[it->second[i]] = true;
+                allusers.push_back(it->second[i]);
+            }
+        }
+    }
     return {};
 }
 
