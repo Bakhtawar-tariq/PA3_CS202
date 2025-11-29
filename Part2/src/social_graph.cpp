@@ -204,6 +204,10 @@ std::unordered_map<int, double> SocialGraph::calculatePageRank(double damping, i
             }
         }
     }
+    int n = allusers.size();
+    for (int i = 0; i < n; i++){
+        rank[allusers[i]] = 1.0/n;
+    }
     return {};
 }
 
