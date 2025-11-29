@@ -45,6 +45,14 @@ void GeographicNetwork::removeVertex(int node)
 void GeographicNetwork::addEdge(int from, int to, int weight)
 {
     // TODO
+    if(!adjList.count(from)){
+        addVertex(from);
+    }
+    if(!adjList.count(to)){
+        addVertex(to);
+    }
+    adjList[from].push_back({to,weight});
+    adjList[to].push_back({from,weight});
 }
 
 void GeographicNetwork::removeEdge(int from, int to)
