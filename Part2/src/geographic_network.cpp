@@ -79,7 +79,15 @@ bool GeographicNetwork::hasEdge(int from, int to) const
 std::vector<int> GeographicNetwork::getAdjacent(int from) const
 {
     // TODO
-    return {};
+    std::vector<int> adjacent;
+    if(!adjList.count(from)){
+        return adjacent;
+    }
+    auto edges = adjList.at(from);
+    for (int i = 0; i < edges.size(); i++){
+        adjacent.push_back(edges[i].to);
+    }
+    return adjacent;
 }
 
 // --- Core Algorithm: Dijkstra's ---
