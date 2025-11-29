@@ -208,6 +208,13 @@ std::unordered_map<int, double> SocialGraph::calculatePageRank(double damping, i
     for (int i = 0; i < n; i++){
         rank[allusers[i]] = 1.0/n;
     }
+
+    std::unordered_map<int, std::vector<int>> followers; //building a new map such that each key has a vector of people who follow that key
+    for (auto it = adjList.begin(); it!= adjList.end(); ++it){
+        for (int i = 0; i < it->second.size(); i++){
+            followers[it->second[i]].push_back(it->first);
+        }
+    }
     return {};
 }
 
