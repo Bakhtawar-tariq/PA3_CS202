@@ -64,6 +64,15 @@ void GeographicNetwork::removeEdge(int from, int to)
 bool GeographicNetwork::hasEdge(int from, int to) const
 {
     // TODO
+    if(!adjList.count(from)){
+        return false;
+    }
+    auto edges = adjList.at(from);
+    for (int i = 0; i<edges.size(); i++){
+        if (edges[i].to == to){
+            return true;
+        }
+    }
     return false;
 }
 
