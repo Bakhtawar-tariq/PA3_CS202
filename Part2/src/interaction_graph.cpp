@@ -213,5 +213,18 @@ std::unordered_map<int, double> InteractionGraph::calculateTrendScores(const std
 std::optional<std::vector<int>> InteractionGraph::getProcessingOrder() const
 {
     // TODO: Implement Kahn's algorithm for topological sorting(aik aur hint lelo).
+    std::unordered_map<int,int> indegree;
+    for (auto it = userToPostEdges.begin(); it != userToPostEdges.end(); ++it){ //all users must have 0 indegree
+        indegree[it->first] = 0;
+    }
+    for (auto it = postToUserEdges.begin(); it!= postToUserEdges.end(); ++it){
+        indegree[it->first] = it->second.size(); //initializing all posts w 0 indeg for now
+    }
+    std::queue<int> q;
+    for (auto it = indegree.begin(); it != indegree.end(); ++it){
+        if(it->second == 0){
+            q.push(it->first);
+        }
+    }
     return std::nullopt;
 }
