@@ -217,9 +217,16 @@ std::unordered_map<int, double> SocialGraph::calculatePageRank(double damping, i
     }
 
     for (int i = 0; i < iterations; i++){
+        double sinkrank = 0.0; //need contribution of sink nodes as our algo needs it
+        for(int j = 0; j < n; j++){
+            int user = allusers[j];
+            if (adjList.find(user) == adjList.end() || adjList.at(user).empty()){ //find a sink node and then add its rank
+                sinkrank = sinkrank + rank[user];
+            }
+        }
         for(int j = 0; j < n; j++){
             int user = allusers[j]; //user we are gonna calculate rank for 
-            newrank[user] = (1.0 - damping)/n; // giving it a base value
+            newrank[user] = (1.0 - damping)/n + (damping * (sinkrank/n)); // giving it a base value + adding contribution of sink node
 
             if(followers.find(user) != followers.end()){ 
                 std::vector<int>& followsuser = followers[user]; //getting the users that follow our user
@@ -230,12 +237,12 @@ std::unordered_map<int, double> SocialGraph::calculatePageRank(double damping, i
                         outdegree_V = adjList.at(V).size(); //its outdeg is the people it follows so get that from adjlist
                     }
                     if (outdegree_V > 0){ //to avoid division from 0
-                        newrank[user] += damping *(rank[V]/outdegree_V);
+                        newrank[user] += damping * (rank[V]/outdegree_V); //+contribution of rank of neighbrs
                     }
                 }
             }
         }
-        for (int l = 0; i < n; i++){ //updating rank for the next iteration
+        for (int l = 0; l < n; l++){ //updating rank for the next iteration
           int user = allusers[l];  
           rank[user] = newrank[user];  
         }
