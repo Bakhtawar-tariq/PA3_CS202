@@ -220,11 +220,38 @@ std::optional<std::vector<int>> InteractionGraph::getProcessingOrder() const
     for (auto it = postToUserEdges.begin(); it!= postToUserEdges.end(); ++it){
         indegree[it->first] = it->second.size(); //initializing all posts w 0 indeg for now
     }
+    //TOPOLOGICAL SORT Kahn’s algorithm works by first finding all nodes with an ”in-degree” of
+    // 0. It adds these to a queue.
     std::queue<int> q;
     for (auto it = indegree.begin(); it != indegree.end(); ++it){
         if(it->second == 0){
             q.push(it->first);
         }
     }
-    return std::nullopt;
+    std::vector<int> processed;
+    // Then, it repeatedly dequeues a node, adds it to the sorted list,
+    // and ”removes” its outgoing edges by decrementing the in-degree of its neighbors. Any neighbor
+    // whose in-degree becomes 0 is then added to the queue.
+    // 13
+    while (!q.empty()){
+        int node = q.front(); //take a user
+        q.pop();
+        processed.push_back(node);
+        auto user = userToPostEdges.find(node);
+        if (user != userToPostEdges.end()){
+            auto posts = user->second; //get the users interactions
+            for (int i = 0; i < posts.size();i++){
+                indegree[posts[i].targetID]--; //for each post it has interacted w decrease its indegree
+                if(indegree[posts[i].targetID] == 0){ //when indegree of a post is 0, push it to queue
+                    q.push(posts[i].targetID);
+                }
+            }
+        }
+    }
+    for (auto it = indegree.begin(); it != indegree.end(); ++it){
+        if (it->second != 0){ //if there is a cycle then some node or more will have their indegree greater than 0
+            return std::nullopt;
+        }
+    }
+    return processed;
 }
